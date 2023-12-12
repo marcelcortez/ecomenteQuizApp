@@ -18,7 +18,7 @@ const GameScreen = ({ route, navigation }) => {
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const response = await axios.get('http://192.168.0.5:8000/api/perguntas/listar');
+        const response = await axios.get('http://192.168.16.1:8000/api/perguntas/listar');
         const data = response.data;
         const formattedQuestions = data.map((apiQuestion) => ({
           question: apiQuestion.pergunta,

@@ -15,14 +15,14 @@ const RankingScreen = ({route, navigation}) => {
       try {
         // Salva o jogador atual no ranking
         if(!rankingUpdated) {
-          await axios.post('http://192.168.0.5:8000/api/ranking', {
+          await axios.post('http://192.168.16.1:8000/api/ranking', {
             nome: playerName,
             pontuacao: score,
           });
         }
   
         // Obtém os dados mais recentes do ranking e ordena pela pontuação
-        const response = await axios.get('http://192.168.0.5:8000/api/ranking');
+        const response = await axios.get('http://192.168.16.1:8000/api/ranking');
         const sortedRanking = response.data.sort((a, b) => b.pontuacao - a.pontuacao);
   
         // Adiciona a propriedade 'colocacao' de acordo com a posição na lista
@@ -65,6 +65,17 @@ const RankingScreen = ({route, navigation}) => {
         renderItem={renderItem}
       />
 
+      {/* Renderizar o jogador atual */}
+      {rankingData.find((item) => item.nome === playerName) && (
+        <View style={styles.cardCurrentPlayer}>
+          <View style={styles.cardPlayer}>
+            <Text style={styles.textCardPlayer}>
+              {`${rankingData.find((item) => item.nome === playerName).colocacao} - ${playerName} - ${score} pts`}
+            </Text>
+        </View>
+        </View>
+      )}
+
       <ThemedButton name="bruce" type="secondary"
         style={styles.btnAnima} onPress={() => navigation.navigate('StartScreen')}
         >VOLTAR
@@ -79,12 +90,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#1785eb',
     alignItems: 'center',
-    marginTop: 30
+    marginTop: 0
   },
   titlePage: {
     backgroundColor: '#337a42',    
     marginVertical: 12,
-    marginTop: 40,
+    marginTop: 65,
     marginBottom: 40,
     borderRadius: 14,
     height: 50,
@@ -129,6 +140,9 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     position: 'absolute',
     bottom: 5
+  },
+  cardCurrentPlayer: {
+    marginBottom: 50,
   },
   btnAnima:{
     marginBottom: 20
