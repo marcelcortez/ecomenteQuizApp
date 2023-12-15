@@ -18,7 +18,7 @@ const GameScreen = ({ route, navigation }) => {
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const response = await axios.get('http://192.168.16.1:8000/api/perguntas/listar');
+        const response = await axios.get('http://172.23.208.1:8000/api/perguntas/listar');
         const data = response.data;
         const formattedQuestions = data.map((apiQuestion) => ({
           question: apiQuestion.pergunta,
@@ -42,6 +42,7 @@ const GameScreen = ({ route, navigation }) => {
   }, []);  
 
   const currentQuestion = questions[currentQuestionIndex];
+
   
   // TIMER
   useEffect(() => {
@@ -53,17 +54,19 @@ const GameScreen = ({ route, navigation }) => {
         if (prevTimer > 0) {
           return prevTimer - 1;
         } else {
-          // Se o tempo esgotar mostra a alternativa correta
-          // Em seguida chama a próxima questão
-          handleAnswer(null);
-          handleNextQuestion();
-          return 30;
+          
+          // Verifica se currentQuestion é definido antes de chamar handleAnswer
+          if (currentQuestion) {
+            handleAnswer(null);
+            setTimer(30);
+            handleNextQuestion();
+          }
         }
       });
     }, 1000);  
     // Limpar o intervalo ao desmontar o componente ou mudar de pergunta
     return () => clearInterval(interval);
-  }, [currentQuestionIndex]);
+  }, [currentQuestionIndex, currentQuestion]);
   
   // Garante que a pontuação da última alternativa seja computada
   useEffect(() => {
@@ -79,14 +82,12 @@ const GameScreen = ({ route, navigation }) => {
     }
   }, [selectedOption]);
 
-  // Efeito para lidar com a transição para a próxima pergunta
-
 
   // Função principal
   //  Adiciona ou desconta pontuação e define os valores dos states
+  const difficultyMultiplier = 1;
   const handleAnswer = (selectedAnswerIndex) => {
-    const difficultyMultiplier = currentQuestion.difficulty || 1;
-    const questionScore = 10 * difficultyMultiplier;
+    const questionScore = 10 * difficultyMultiplier;  
     
     // Verfica se a alternativa selecionada é a resposta correta
     if (selectedAnswerIndex === currentQuestion.correctAnswerIndex) {

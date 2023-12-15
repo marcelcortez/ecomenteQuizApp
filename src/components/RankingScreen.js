@@ -15,14 +15,14 @@ const RankingScreen = ({route, navigation}) => {
       try {
         // Salva o jogador atual no ranking
         if(!rankingUpdated) {
-          await axios.post('http://192.168.16.1:8000/api/ranking', {
+          await axios.post('http://172.23.208.1:8000/api/ranking', {
             nome: playerName,
             pontuacao: score,
           });
         }
   
         // Obtém os dados mais recentes do ranking e ordena pela pontuação
-        const response = await axios.get('http://192.168.16.1:8000/api/ranking');
+        const response = await axios.get('http://172.23.208.1:8000/api/ranking');
         const sortedRanking = response.data.sort((a, b) => b.pontuacao - a.pontuacao);
   
         // Adiciona a propriedade 'colocacao' de acordo com a posição na lista
